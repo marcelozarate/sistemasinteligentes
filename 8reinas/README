@@ -3,11 +3,13 @@ Uso:
 Sea <n> un número entero con el total de n reinas a buscar en un tablero n x n
 
 Búsqueda en profundidad
+-----------------------
 
 <variable> = BusquedaDF()
 <variable>.buscar(<n>)
 
 Búsqueda en anchura
+-------------------
 
 <variable> = BusquedaBF()
 <variable>.buscar(<n>)

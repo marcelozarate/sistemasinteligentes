@@ -89,6 +89,7 @@ class Busqueda(object):
         pass
 
     def buscar(self, tamano):
+        self.__init__()
         primer_reina = NodoReina(tamano)
         # primer_reina.estado = []
         self.abiertos.append(primer_reina)
