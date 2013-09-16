@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import sys
+import time
 
 
 class Nodo(object):
@@ -19,6 +20,10 @@ class Nodo(object):
 
 class NodoReina(Nodo):
     tablero_tamano = 4
+
+    def __init__(self, tamano):
+        Nodo.__init__(self)
+        self.tablero_tamano = tamano
 
     # EJ: estado = [[2,1], [0,2]] y pos = [3,3]
     def sin_ataque(self, estado, pos):
@@ -47,14 +52,13 @@ class NodoReina(Nodo):
 
     def expandir(self):
         sucesores = []
-        for col in range(0, NodoReina.tablero_tamano):
-            for fila in range(0, NodoReina.tablero_tamano):
+        for col in range(0, self.tablero_tamano):
+            for fila in range(0, self.tablero_tamano):
                 posachequear = [fila, col]
                 valida = self.sin_ataque(self.estado, posachequear)
                 if valida:
-                    nodohijo = NodoReina()
+                    nodohijo = NodoReina(self.tablero_tamano)
                     nodohijo.estado = self.estado + [posachequear]
-
                     nodohijo.nivel = self.nivel + 1
                     nodohijo.padre = self
                     nodohijo.accion = posachequear
@@ -80,17 +84,21 @@ class Busqueda(object):
     def __init__(self):
         self.cerrados = []
         self.abiertos = []
+        self.nodosgen = 1
+        self.tiempo = 0
 
-    def insertar(self, nodos, lista):
+    def insertar(self, nodos):
         pass
 
-    def buscar(self):
-        primer_reina = NodoReina()
+    def buscar(self, tamano):
+        tiempo_inicial = time.time()
+        self.__init__()
+        primer_reina = NodoReina(tamano)
         # primer_reina.estado = []
         self.abiertos.append(primer_reina)
         while (len(self.abiertos) > 0) and not(self.abiertos[0].es_solucion()):
 
-            print (("el 1er abierto actual es", self.abiertos[0].estado))
+            # print (("el 1er abierto actual es", self.abiertos[0].estado))
 
             nodoactual = self.abiertos.pop(0)
 
@@ -98,6 +106,7 @@ class Busqueda(object):
 
             self.cerrados.append(nodoactual)
 
+        self.tiempo = time.time() - tiempo_inicial
         if len(self.abiertos) == 0:
             print ("No hay solucion")
         else:
@@ -120,6 +129,11 @@ class Busqueda(object):
                 else:
                     sys.stdout.write("#")
             print((" "))
+        print(("Profundidad de la solucion: ", self.abiertos[0].nivel))
+        print(("Cantidad de estados generados: ", self.nodosgen))
+        print(("Cantidad de nodos abiertos: ", len(self.abiertos)))
+        print(("Cantidad de nodos cerrados: ", len(self.cerrados)))
+        print(("Tiempo de procesamiento (segumdos): ", self.tiempo))
 
 
 class BusquedaDF(Busqueda):
@@ -127,6 +141,17 @@ class BusquedaDF(Busqueda):
     def insertar(self, nodos):
         if (nodos != []):
             self.abiertos = nodos + self.abiertos
+            self.nodosgen += len(nodos)
 
-    # si llamo a buscar, hará la búsqueda genérica, ojo que utiliza el insertar
-    # definido en cada tipo de búsqueda.
+# Agregar
+# la profundidad de la solución, cantidad total de estados
+# generados, número de nodos abiertos, número de nodos cerrados
+# y tiempo de procesamiento.
+
+
+class BusquedaBF(Busqueda):
+
+    def insertar(self, nodos):
+        if (nodos != []):
+            self.abiertos = self.abiertos + nodos
+            self.nodosgen += len(nodos)
