@@ -13,3 +13,9 @@ Búsqueda en anchura
 
 <variable> = BusquedaBF()
 <variable>.buscar(<n>)
+
+Búsqueda por costo unitario
+---------------------------
+
+<variable> = BusquedaUC()
+<variable>.buscar(<n>)

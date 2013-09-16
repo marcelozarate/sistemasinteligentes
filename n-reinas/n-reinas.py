@@ -10,6 +10,7 @@ class Nodo(object):
         self.nivel = 1  # Nivel del arbol en el que nos encontramos
         self.padre = False  # Puntero Identificador del nodo padre
         self.accion = []  # Acción que el padre ejecutó para llegar al nodo
+        self.costo = 1
 
     def expandir(self):
         pass
@@ -152,9 +153,10 @@ class BusquedaBF(Busqueda):
             self.nodosgen += len(nodos)
 
 
-class BusquedaCU(Busqueda):
+class BusquedaUC(Busqueda):
 
     def insertar(self, nodos):
         if (nodos != []):
             self.abiertos = self.abiertos + nodos
+            self.abiertos.sort(key=lambda x: x.costo)
             self.nodosgen += len(nodos)
