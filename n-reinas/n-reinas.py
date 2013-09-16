@@ -133,7 +133,7 @@ class Busqueda(object):
         print(("Cantidad de estados generados: ", self.nodosgen))
         print(("Cantidad de nodos abiertos: ", len(self.abiertos)))
         print(("Cantidad de nodos cerrados: ", len(self.cerrados)))
-        print(("Tiempo de procesamiento (segumdos): ", self.tiempo))
+        print(("Tiempo de procesamiento (segundos): ", self.tiempo))
 
 
 class BusquedaDF(Busqueda):
@@ -143,13 +143,16 @@ class BusquedaDF(Busqueda):
             self.abiertos = nodos + self.abiertos
             self.nodosgen += len(nodos)
 
-# Agregar
-# la profundidad de la solución, cantidad total de estados
-# generados, número de nodos abiertos, número de nodos cerrados
-# y tiempo de procesamiento.
-
 
 class BusquedaBF(Busqueda):
+
+    def insertar(self, nodos):
+        if (nodos != []):
+            self.abiertos = self.abiertos + nodos
+            self.nodosgen += len(nodos)
+
+
+class BusquedaCU(Busqueda):
 
     def insertar(self, nodos):
         if (nodos != []):
