@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys
 import copy
-
+import time
 
 class Nodo(object):
 
@@ -10,7 +10,7 @@ class Nodo(object):
         self.nivel = 1  # Nivel del arbol en el que nos encontramos
         self.padre = False  # Puntero Identificador del nodo padre
         self.accion = []  # Acción que el padre ejecutó para llegar al nodo
-
+        self.costo = 1
     def expandir(self):
         pass
 
@@ -59,6 +59,9 @@ class NodoCamino(Nodo):
         if self.estado[0][0] > 0 and pos not in self.estado[3] and pos not in self.estado[4]:
             nodohijo = copy.deepcopy(self)
             nodohijo.padre=self
+            # Si no sigo en la misma columna varía el costo
+            if(self.estado[0][1] != pos[1]):
+                nodohijo.costo += 0.2
             nodohijo.nivel= nodohijo.padre.nivel + 1
             nodohijo.estado[0][0] -= 1
             nodohijo.estado[4].append(pos)
@@ -71,6 +74,9 @@ class NodoCamino(Nodo):
         if self.estado[0][1] > 0 and pos not in self.estado[3] and pos not in self.estado[4]:
             nodohijo = copy.deepcopy(self)
             nodohijo.padre=self
+            # Si no sigo en la misma fila varía el costo
+            if(self.estado[0][0] != pos[0]):
+                nodohijo.costo += 0.2
             nodohijo.nivel= nodohijo.padre.nivel + 1
             nodohijo.estado[0][1] -= 1
             nodohijo.estado[4].append(pos)
@@ -82,6 +88,9 @@ class NodoCamino(Nodo):
         if self.estado[0][0] <= (self.tablero_tamano - 2) and pos not in self.estado[3] and pos not in self.estado[4]:
             nodohijo = copy.deepcopy(self)
             nodohijo.padre=self
+            # Si no sigo en la misma columna varía el costo        
+            if(self.estado[0][1] != pos[1]):
+                nodohijo.costo += 0.2
             nodohijo.nivel= nodohijo.padre.nivel + 1
             nodohijo.estado[0][0] += 1
             nodohijo.estado[4].append(pos)
@@ -93,6 +102,9 @@ class NodoCamino(Nodo):
         if self.estado[0][1] <= (self.tablero_tamano -2) and pos not in self.estado[3] and pos not in self.estado[4]:
             nodohijo = copy.deepcopy(self)
             nodohijo.padre=self
+            # Si no sigo en la misma fila varía el costo
+            if(self.estado[0][0] != pos[0]):
+                nodohijo.costo += 0.2
             nodohijo.nivel= nodohijo.padre.nivel + 1
             nodohijo.estado[0][1] += 1
             nodohijo.estado[4].append(pos)
@@ -126,15 +138,31 @@ class Busqueda(object):
     def __init__(self):
         self.cerrados = []
         self.abiertos = []
+        self.nodosgen = 1
+        self.tiempo = 0
 
     def insertar(self, nodos, lista):
         pass
 
     def buscar(self, tamano):
-        start=[2, 2]
-        peon=[2, 2]
-        goal=[0, 1]
-        bloqueados=[[1, 0],[1, 1],[1, 2]]
+        #start=[2, 2]
+        startf=int(raw_input("Fila de Start: "))
+        startc=int(raw_input("Columna de Start: "))
+        start=[startf, startc]
+        peon= [start[0], start[1]]
+        goalf=int(raw_input("Fila de Goal: "))
+        goalc=int(raw_input("Columna de Goal: "))
+        goal=[goalf, goalc]
+        #goal=[0, 1]
+        #bloqueados=[[1, 3],[1, 1],[1, 2]]
+
+        cant_bloq=int(raw_input("Cantidad de Bloqueados: "))
+        bloqueados=[]
+        for i in range(0, cant_bloq):
+            bloqueados.append( [int(raw_input("Fila Bloq[%d]: "%i)),int(raw_input("Columna Bloq[%d]: "%i))])
+        print(bloqueados)
+        tiempo_inicial = time.time()
+        self.__init__()
         primer_camino = NodoCamino(tamano)
         primer_camino.estado = [peon, start, goal, bloqueados,[start]]
         self.abiertos.append(primer_camino)
@@ -147,7 +175,7 @@ class Busqueda(object):
             self.insertar(nodoactual.expandir())
 
             self.cerrados.append(nodoactual)
-
+        self.tiempo = time.time() - tiempo_inicial
         if len(self.abiertos) == 0:
             print ("No hay solucion")
         else:
@@ -178,16 +206,13 @@ class Busqueda(object):
                 else:
                     sys.stdout.write("[ ]")
             print("\n")
-                    #hayreina = False
-                #for reinas in self.abiertos[0].estado:
-                    #if reinas[0] == fila and reinas[1] == col:
-                        #hayreina = True
 
-                #if hayreina:
-                    #sys.stdout.write("R")
-                #else:
-                    #sys.stdout.write("#")
-            #print((" "))
+        print(("Profundidad de la solucion: "+ str(self.abiertos[0].nivel)))
+        print(("Cantidad de estados generados: "+ str(self.nodosgen)))
+        print(("Cantidad de nodos abiertos: " + str(len(self.abiertos))))
+        print(("Cantidad de nodos cerrados: "+ str(len(self.cerrados))))
+        print(("Tiempo de procesamiento (segundos): "+ str(self.tiempo)))
+        
 
 
 class BusquedaDF(Busqueda):
@@ -195,13 +220,19 @@ class BusquedaDF(Busqueda):
     def insertar(self, nodos):
         if (nodos != []):
             self.abiertos = nodos + self.abiertos
-
+            self.nodosgen += len(nodos)
 
 class BusquedaBF(Busqueda):
 
     def insertar(self, nodos):
         if (nodos != []):
             self.abiertos = self.abiertos + nodos
+            self.nodosgen += len(nodos)
 
-#class BusquedaCU(Busqueda):
-#   """ Expande el nodo de menor costo """
+class BusquedaUC(Busqueda):
+
+    def insertar(self, nodos):
+        if (nodos != []):
+            self.abiertos = self.abiertos + nodos
+            self.abiertos.sort(key=lambda x: x.costo)
+            self.nodosgen += len(nodos)
