@@ -2,6 +2,7 @@
 import sys
 import copy
 
+
 class Nodo(object):
 
     def __init__(self):
@@ -18,20 +19,19 @@ class Nodo(object):
 
 
 class NodoCamino(Nodo):
-    tablero_tamano=0
+    tablero_tamano = 0
 
-    def __init__(self,tamano):
+    def __init__(self, tamano):
         Nodo.__init__(self)
         self.tablero_tamano = tamano
-        #self.estado=[ start, start, goal, bloqueados, [] ]
 
-    
+
     #  ESTADO INICIAL                         ESTADO FINAL
     #    o G o o        se puede mostrar asi    w w o o
     #    o - - -                                w - - -
-    #    o o S o                                w w w o 
+    #    o o S o                                w w w o
     #    o o o o                                o o o o
-    
+
     # PEON = [peonF, peonC]
     # START= [startF, startC]
     # GOAL = [goalF, goalC]
@@ -42,11 +42,11 @@ class NodoCamino(Nodo):
     # ESTADO = [[2,2],[2,2],[0,1], [[1,1],[1,2],[1,3]],  []  ]
     # ESTADO = [PEON, START, GOAL,      BLOQUEADOS    ,CAMINO]
     # ESTADO = [  0 ,   1  ,  2  ,      3             ,   4  ]
-    
+
     def es_solucion(self):
-        """La posición del peon sea igual a la posición  de GOAL""" 
+        """La posición del peon sea igual a la posición  de GOAL"""
         # Es necesario pasar el nodo para trabajar con el estado del mismo?? Para mi no..
-        
+
         if (self.estado[0] == self.estado[2]):
             return True
         else:
@@ -61,7 +61,7 @@ class NodoCamino(Nodo):
             nodohijo.padre=self
             nodohijo.nivel= nodohijo.padre.nivel + 1
             nodohijo.estado[0][0] -= 1
-            nodohijo.estado[4].append(self.estado[0])
+            nodohijo.estado[4].append(pos)
         return nodohijo
 
 
@@ -73,7 +73,7 @@ class NodoCamino(Nodo):
             nodohijo.padre=self
             nodohijo.nivel= nodohijo.padre.nivel + 1
             nodohijo.estado[0][1] -= 1
-            nodohijo.estado[4].append(self.estado[0])
+            nodohijo.estado[4].append(pos)
         return nodohijo
 
     def moverAbajo(self):
@@ -84,7 +84,7 @@ class NodoCamino(Nodo):
             nodohijo.padre=self
             nodohijo.nivel= nodohijo.padre.nivel + 1
             nodohijo.estado[0][0] += 1
-            nodohijo.estado[4].append(self.estado[0])
+            nodohijo.estado[4].append(pos)
         return nodohijo
 
     def moverDerecha(self):
@@ -95,15 +95,8 @@ class NodoCamino(Nodo):
             nodohijo.padre=self
             nodohijo.nivel= nodohijo.padre.nivel + 1
             nodohijo.estado[0][1] += 1
-            nodohijo.estado[4].append(self.estado[0])
+            nodohijo.estado[4].append(pos)
         return nodohijo
-
-
-
-
-
-
-
 
     def expandir(self):
         # Acordate que es como sucesores, aca van las reglas
@@ -116,7 +109,7 @@ class NodoCamino(Nodo):
         nodo = self.moverIzquierda()
         if nodo:
             sucesores.append(nodo)
-        
+
         nodo = self.moverAbajo()
         if nodo:
             sucesores.append(nodo)
@@ -126,8 +119,8 @@ class NodoCamino(Nodo):
             sucesores.append(nodo)
 
         return sucesores
-            
-        
+
+
 class Busqueda(object):
 
     def __init__(self):
@@ -138,14 +131,12 @@ class Busqueda(object):
         pass
 
     def buscar(self, tamano):
-        start=[2,2]
-        peon=[2,2]
-        goal=[0,1]
-        bloqueados=[[1,1],[1,2],[1,3]]
+        start=[2, 2]
+        peon=[2, 2]
+        goal=[0, 1]
+        bloqueados=[[1, 0],[1, 1],[1, 2]]
         primer_camino = NodoCamino(tamano)
-        #primer_camino.tablero_tamano=tamano
-        primer_camino.estado = [peon,start,goal,bloqueados,[]]   
-        # primer_reina.estado = []
+        primer_camino.estado = [peon, start, goal, bloqueados,[start]]
         self.abiertos.append(primer_camino)
         while (len(self.abiertos) > 0) and not(self.abiertos[0].es_solucion()):
 
@@ -160,30 +151,30 @@ class Busqueda(object):
         if len(self.abiertos) == 0:
             print ("No hay solucion")
         else:
-            
             print("Encontre una solucion")
             print(self.abiertos[0].estado)
             self.mostrar_solucion()
+
     def mostrar_solucion(self):
         print ("\n============")
         print ("Hay solucion")
         print ("============\n")
-        
+
         for fila in range(0, self.abiertos[0].tablero_tamano):
             for col in range(0, self.abiertos[0].tablero_tamano):
                 # Si está en bloqueados
                 if [fila, col] in self.abiertos[0].estado[3]:
                     sys.stdout.write("[X]")
-                # Si está en camino     
+                # Si está en camino
                 elif [fila,col] in self.abiertos[0].estado[4]:
-                    sys.stdout.write("[-]")
-                # Si está en start    
-                elif [fila,col] in self.abiertos[0].estado[1]:
-                    sys.stdout.write("[S]")
-                # Si está en goal    
-                elif [fila,col] in self.abiertos[0].estado[2]:
-                    sys.stdout.write("[G]")
-                
+                    if [fila, col] != self.abiertos[0].estado[1]:
+                        if [fila, col] != self.abiertos[0].estado[2]:
+                           sys.stdout.write("[-]")
+                        else:
+                           sys.stdout.write("[G]")
+                    else:
+                        sys.stdout.write("[S]")
+                    
                 else:
                     sys.stdout.write("[ ]")
             print("\n")
