@@ -22,8 +22,8 @@ Búsqueda por costo unitario
 
 Cualquiera sea el método de búsqueda elegido, el programa nos pedirá:
 
--	Fila y Columna de la posición START
--	Fila y Columna de la posición GOAL
--   Cantidad de casilleros bloqueados
+-	Fila y Columna de la posición START.
+-	Fila y Columna de la posición GOAL.
+-	Cantidad de casilleros bloqueados.
 -	Fila y Columna de cada casillero bloqueado.
 
