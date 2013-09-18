@@ -25,6 +25,7 @@ class NodoReina(Nodo):
     def __init__(self, tamano):
         Nodo.__init__(self)
         self.tablero_tamano = tamano
+        self.caslibres = 0
 
     # EJ: estado = [[2,1], [0,2]] y pos = [3,3]
     def sin_ataque(self, estado, pos):
@@ -65,6 +66,7 @@ class NodoReina(Nodo):
                     nodohijo.accion = posachequear
                     #nodohijo.costo = self.costo + costodeeste
                     sucesores.append(nodohijo)
+        self.caslibres = len(sucesores)
         return sucesores
 
     def es_solucion(self):
@@ -159,4 +161,22 @@ class BusquedaUC(Busqueda):
         if (nodos != []):
             self.abiertos = self.abiertos + nodos
             self.abiertos.sort(key=lambda x: x.costo)
+            self.nodosgen += len(nodos)
+
+
+class BusquedaDFI(Busqueda):
+
+    def insertar(self, nodos):
+        if (nodos != []):
+            nodos.sort(key=lambda x: x.caslibres, reverse=True)
+            self.abiertos = nodos + self.abiertos
+            self.nodosgen += len(nodos)
+
+
+class BusquedaBestF(Busqueda):
+
+    def insertar(self, nodos):
+        if (nodos != []):
+            self.abiertos = nodos + self.abiertos
+            self.abiertos.sort(key=lambda x: x.caslibres, reverse=True)
             self.nodosgen += len(nodos)
