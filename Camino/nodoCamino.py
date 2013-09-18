@@ -12,6 +12,7 @@ class Nodo(object):
         self.padre = False  # Puntero Identificador del nodo padre
         self.accion = []  # Acción que el padre ejecutó para llegar al nodo
         self.costo = 1
+        self.heuristica = 0
 
     def expandir(self):
         pass
@@ -64,6 +65,9 @@ class NodoCamino(Nodo):
             nodohijo.nivel = nodohijo.padre.nivel + 1
             nodohijo.estado[0][0] -= 1
             nodohijo.estado[4].append(pos)
+            #heurística
+            nodohijo.heuristica = (abs(pos[0] - nodohijo.estado[2][0]) +
+            abs(pos[1] - nodohijo.estado[2][1]))
         return nodohijo
 
     def moverIzquierda(self):
@@ -79,6 +83,9 @@ class NodoCamino(Nodo):
             nodohijo.nivel = nodohijo.padre.nivel + 1
             nodohijo.estado[0][1] -= 1
             nodohijo.estado[4].append(pos)
+            #heurística
+            nodohijo.heuristica = (abs(pos[0] - nodohijo.estado[2][0]) +
+            abs(pos[1] - nodohijo.estado[2][1]))
         return nodohijo
 
     def moverAbajo(self):
@@ -94,6 +101,9 @@ class NodoCamino(Nodo):
             nodohijo.nivel = nodohijo.padre.nivel + 1
             nodohijo.estado[0][0] += 1
             nodohijo.estado[4].append(pos)
+            #heurística
+            nodohijo.heuristica = (abs(pos[0] - nodohijo.estado[2][0]) +
+            abs(pos[1] - nodohijo.estado[2][1]))
         return nodohijo
 
     def moverDerecha(self):
@@ -109,6 +119,9 @@ class NodoCamino(Nodo):
             nodohijo.nivel = nodohijo.padre.nivel + 1
             nodohijo.estado[0][1] += 1
             nodohijo.estado[4].append(pos)
+            #heurística
+            nodohijo.heuristica = (abs(pos[0] - nodohijo.estado[2][0]) +
+            abs(pos[1] - nodohijo.estado[2][1]))
         return nodohijo
 
     def expandir(self):
@@ -164,6 +177,7 @@ class Busqueda(object):
         self.__init__()
         primer_camino = NodoCamino(tamano)
         primer_camino.estado = [peon, start, goal, bloqueados, [start]]
+        primer_camino.heuristica = abs(startf - goalf) + abs(startc - goalc)
         self.abiertos.append(primer_camino)
         while (len(self.abiertos) > 0) and not(self.abiertos[0].es_solucion()):
 
@@ -235,4 +249,28 @@ class BusquedaUC(Busqueda):
         if (nodos != []):
             self.abiertos = self.abiertos + nodos
             self.abiertos.sort(key=lambda x: x.costo)
+            self.nodosgen += len(nodos)
+
+
+# Deep First Informado
+class BusquedaDFI(Busqueda):
+
+    def insertar(self, nodos):
+        if (nodos != []):
+            #Ordeno los nodos por heuristica
+            nodos.sort(key=lambda x: x.heuristica)
+            #Los pongo en la cabeza de abiertos
+            self.abiertos = nodos + self.abiertos
+            self.nodosgen += len(nodos)
+
+
+# Best First
+class BusquedaBFI(Busqueda):
+
+    def insertar(self, nodos):
+        if (nodos != []):
+            #Los pongo en abiertos (NO IMPORTA DONDE)
+            self.abiertos = nodos + self.abiertos
+            #Ordeno todos los abiertos por heuristica
+            self.abiertos.sort(key=lambda x: x.heuristica)
             self.nodosgen += len(nodos)
