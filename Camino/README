@@ -1,0 +1,29 @@
+Uso:
+
+Sea <n> un número entero que representa el tamaño del tablero a utilizar. (tablero n x n)
+
+Búsqueda en profundidad
+-----------------------
+
+<variable> = BusquedaDF()
+<variable>.buscar(<n>)
+
+Búsqueda en anchura
+-------------------
+
+<variable> = BusquedaBF()
+<variable>.buscar(<n>)
+
+Búsqueda por costo unitario
+---------------------------
+
+<variable> = BusquedaUC()
+<variable>.buscar(<n>)
+
+Cualquiera sea el método de búsqueda elegido, el programa nos pedirá:
+
+-	Fila y Columna de la posición START.
+-	Fila y Columna de la posición GOAL.
+-	Cantidad de casilleros bloqueados.
+-	Fila y Columna de cada casillero bloqueado.
+
