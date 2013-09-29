@@ -13,6 +13,9 @@ class Nodo(object):
         self.accion = []  # Acción que el padre ejecutó para llegar al nodo
         self.costo = 1
         self.heuristica = 0
+        # Para la busqueda A*
+        self.costo_acumulado = 1
+        self.costo_estrella = 1
 
     def expandir(self):
         pass
@@ -68,6 +71,10 @@ class NodoCamino(Nodo):
             #heurística
             nodohijo.heuristica = (abs(pos[0] - nodohijo.estado[2][0]) +
             abs(pos[1] - nodohijo.estado[2][1]))
+            #Para el A*
+            nodohijo.costo_acumulado = self.costo_acumulado + nodohijo.costo
+            nodohijo.costo_estrella = nodohijo.costo_acumulado + \
+            nodohijo.heuristica
         return nodohijo
 
     def moverIzquierda(self):
@@ -86,6 +93,10 @@ class NodoCamino(Nodo):
             #heurística
             nodohijo.heuristica = (abs(pos[0] - nodohijo.estado[2][0]) +
             abs(pos[1] - nodohijo.estado[2][1]))
+            #Para el A*
+            nodohijo.costo_acumulado = self.costo_acumulado + nodohijo.costo
+            nodohijo.costo_estrella = nodohijo.costo_acumulado + \
+            nodohijo.heuristica
         return nodohijo
 
     def moverAbajo(self):
@@ -104,6 +115,10 @@ class NodoCamino(Nodo):
             #heurística
             nodohijo.heuristica = (abs(pos[0] - nodohijo.estado[2][0]) +
             abs(pos[1] - nodohijo.estado[2][1]))
+            #Para el A*
+            nodohijo.costo_acumulado = self.costo_acumulado + nodohijo.costo
+            nodohijo.costo_estrella = nodohijo.costo_acumulado + \
+            nodohijo.heuristica
         return nodohijo
 
     def moverDerecha(self):
@@ -122,6 +137,10 @@ class NodoCamino(Nodo):
             #heurística
             nodohijo.heuristica = (abs(pos[0] - nodohijo.estado[2][0]) +
             abs(pos[1] - nodohijo.estado[2][1]))
+            #Para el A*
+            nodohijo.costo_acumulado = self.costo_acumulado + nodohijo.costo
+            nodohijo.costo_estrella = nodohijo.costo_acumulado + \
+            nodohijo.heuristica
         return nodohijo
 
     def expandir(self):
@@ -273,4 +292,16 @@ class BusquedaBFI(Busqueda):
             self.abiertos = nodos + self.abiertos
             #Ordeno todos los abiertos por heuristica
             self.abiertos.sort(key=lambda x: x.heuristica)
+            self.nodosgen += len(nodos)
+
+
+# A *
+class BusquedaAS(Busqueda):
+
+    def insertar(self, nodos):
+        if (nodos != []):
+            #Los pongo en abiertos (NO IMPORTA DONDE)
+            self.abiertos = nodos + self.abiertos
+            #Ordeno todos los abiertos por heuristica
+            self.abiertos.sort(key=lambda x: x.costo_estrella)
             self.nodosgen += len(nodos)
