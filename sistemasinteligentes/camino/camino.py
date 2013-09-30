@@ -3,6 +3,8 @@ import sys
 import copy
 import time
 
+"""
+<<<<<<< HEAD:Camino/nodoCamino.py
 
 class Nodo(object):
 
@@ -22,7 +24,12 @@ class Nodo(object):
 
     def es_solucion(self):
         pass
+=======
+from ..busqueda.busqueda import Nodo
+>>>>>>> upstream/master:sistemasinteligentes/camino/camino.py
 
+"""
+from ..busqueda.busqueda import Nodo
 
 class NodoCamino(Nodo):
     tablero_tamano = 0
@@ -62,12 +69,14 @@ class NodoCamino(Nodo):
         self.estado[4]:
             nodohijo = copy.deepcopy(self)
             nodohijo.padre = self
-            # Si no sigo en la misma columna varía el costo
-            if(self.estado[0][1] != pos[1]):
-                nodohijo.costo += 0.2
             nodohijo.nivel = nodohijo.padre.nivel + 1
             nodohijo.estado[0][0] -= 1
             nodohijo.estado[4].append(pos)
+
+            # Si no sigo en la misma columna varía el costo
+            if(self.estado[0][1] != pos[1]):
+                nodohijo.costo += 0.2
+
             #heurística
             nodohijo.heuristica = (abs(pos[0] - nodohijo.estado[2][0]) +
             abs(pos[1] - nodohijo.estado[2][1]))
@@ -84,12 +93,13 @@ class NodoCamino(Nodo):
         self.estado[4]:
             nodohijo = copy.deepcopy(self)
             nodohijo.padre = self
-            # Si no sigo en la misma fila varía el costo
-            if(self.estado[0][0] != pos[0]):
-                nodohijo.costo += 0.2
             nodohijo.nivel = nodohijo.padre.nivel + 1
             nodohijo.estado[0][1] -= 1
             nodohijo.estado[4].append(pos)
+            # Si no sigo en la misma fila varía el costo
+            if(self.estado[0][0] != pos[0]):
+                nodohijo.costo += 0.2
+
             #heurística
             nodohijo.heuristica = (abs(pos[0] - nodohijo.estado[2][0]) +
             abs(pos[1] - nodohijo.estado[2][1]))
@@ -106,12 +116,14 @@ class NodoCamino(Nodo):
         self.estado[3] and pos not in self.estado[4]:
             nodohijo = copy.deepcopy(self)
             nodohijo.padre = self
-            # Si no sigo en la misma columna varía el costo
-            if(self.estado[0][1] != pos[1]):
-                nodohijo.costo += 0.2
             nodohijo.nivel = nodohijo.padre.nivel + 1
             nodohijo.estado[0][0] += 1
             nodohijo.estado[4].append(pos)
+
+            # Si no sigo en la misma columna varía el costo
+            if(self.estado[0][1] != pos[1]):
+                nodohijo.costo += 0.2
+
             #heurística
             nodohijo.heuristica = (abs(pos[0] - nodohijo.estado[2][0]) +
             abs(pos[1] - nodohijo.estado[2][1]))
@@ -128,12 +140,14 @@ class NodoCamino(Nodo):
         self.estado[3] and pos not in self.estado[4]:
             nodohijo = copy.deepcopy(self)
             nodohijo.padre = self
-            # Si no sigo en la misma fila varía el costo
-            if(self.estado[0][0] != pos[0]):
-                nodohijo.costo += 0.2
             nodohijo.nivel = nodohijo.padre.nivel + 1
             nodohijo.estado[0][1] += 1
             nodohijo.estado[4].append(pos)
+
+            # Si no sigo en la misma fila varía el costo
+            if(self.estado[0][0] != pos[0]):
+                nodohijo.costo += 0.2
+
             #heurística
             nodohijo.heuristica = (abs(pos[0] - nodohijo.estado[2][0]) +
             abs(pos[1] - nodohijo.estado[2][1]))
@@ -296,7 +310,7 @@ class BusquedaBFI(Busqueda):
 
 
 # A *
-class BusquedaAS(Busqueda):
+class BusquedaAStar(Busqueda):
 
     def insertar(self, nodos):
         if (nodos != []):
