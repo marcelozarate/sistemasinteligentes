@@ -3,8 +3,33 @@ import sys
 import copy
 import time
 
-from ..busqueda.busqueda import Nodo
+"""
+<<<<<<< HEAD:Camino/nodoCamino.py
 
+class Nodo(object):
+
+    def __init__(self):
+        self.estado = []  # Los posibles arreglos de n reinas
+        self.nivel = 1  # Nivel del arbol en el que nos encontramos
+        self.padre = False  # Puntero Identificador del nodo padre
+        self.accion = []  # Acción que el padre ejecutó para llegar al nodo
+        self.costo = 1
+        self.heuristica = 0
+        # Para la busqueda A*
+        self.costo_acumulado = 1
+        self.costo_estrella = 1
+
+    def expandir(self):
+        pass
+
+    def es_solucion(self):
+        pass
+=======
+from ..busqueda.busqueda import Nodo
+>>>>>>> upstream/master:sistemasinteligentes/camino/camino.py
+
+"""
+from ..busqueda.busqueda import Nodo
 
 class NodoCamino(Nodo):
     tablero_tamano = 0
@@ -44,15 +69,21 @@ class NodoCamino(Nodo):
         self.estado[4]:
             nodohijo = copy.deepcopy(self)
             nodohijo.padre = self
-            # Si no sigo en la misma columna varía el costo
-            if(self.estado[0][1] != pos[1]):
-                nodohijo.costo += 0.2
             nodohijo.nivel = nodohijo.padre.nivel + 1
             nodohijo.estado[0][0] -= 1
             nodohijo.estado[4].append(pos)
+
+            # Si no sigo en la misma columna varía el costo
+            if(self.estado[0][1] != pos[1]):
+                nodohijo.costo += 0.2
+
             #heurística
             nodohijo.heuristica = (abs(pos[0] - nodohijo.estado[2][0]) +
             abs(pos[1] - nodohijo.estado[2][1]))
+            #Para el A*
+            nodohijo.costo_acumulado = self.costo_acumulado + nodohijo.costo
+            nodohijo.costo_estrella = nodohijo.costo_acumulado + \
+            nodohijo.heuristica
         return nodohijo
 
     def moverIzquierda(self):
@@ -62,15 +93,20 @@ class NodoCamino(Nodo):
         self.estado[4]:
             nodohijo = copy.deepcopy(self)
             nodohijo.padre = self
-            # Si no sigo en la misma fila varía el costo
-            if(self.estado[0][0] != pos[0]):
-                nodohijo.costo += 0.2
             nodohijo.nivel = nodohijo.padre.nivel + 1
             nodohijo.estado[0][1] -= 1
             nodohijo.estado[4].append(pos)
+            # Si no sigo en la misma fila varía el costo
+            if(self.estado[0][0] != pos[0]):
+                nodohijo.costo += 0.2
+
             #heurística
             nodohijo.heuristica = (abs(pos[0] - nodohijo.estado[2][0]) +
             abs(pos[1] - nodohijo.estado[2][1]))
+            #Para el A*
+            nodohijo.costo_acumulado = self.costo_acumulado + nodohijo.costo
+            nodohijo.costo_estrella = nodohijo.costo_acumulado + \
+            nodohijo.heuristica
         return nodohijo
 
     def moverAbajo(self):
@@ -80,15 +116,21 @@ class NodoCamino(Nodo):
         self.estado[3] and pos not in self.estado[4]:
             nodohijo = copy.deepcopy(self)
             nodohijo.padre = self
-            # Si no sigo en la misma columna varía el costo
-            if(self.estado[0][1] != pos[1]):
-                nodohijo.costo += 0.2
             nodohijo.nivel = nodohijo.padre.nivel + 1
             nodohijo.estado[0][0] += 1
             nodohijo.estado[4].append(pos)
+
+            # Si no sigo en la misma columna varía el costo
+            if(self.estado[0][1] != pos[1]):
+                nodohijo.costo += 0.2
+
             #heurística
             nodohijo.heuristica = (abs(pos[0] - nodohijo.estado[2][0]) +
             abs(pos[1] - nodohijo.estado[2][1]))
+            #Para el A*
+            nodohijo.costo_acumulado = self.costo_acumulado + nodohijo.costo
+            nodohijo.costo_estrella = nodohijo.costo_acumulado + \
+            nodohijo.heuristica
         return nodohijo
 
     def moverDerecha(self):
@@ -98,15 +140,21 @@ class NodoCamino(Nodo):
         self.estado[3] and pos not in self.estado[4]:
             nodohijo = copy.deepcopy(self)
             nodohijo.padre = self
-            # Si no sigo en la misma fila varía el costo
-            if(self.estado[0][0] != pos[0]):
-                nodohijo.costo += 0.2
             nodohijo.nivel = nodohijo.padre.nivel + 1
             nodohijo.estado[0][1] += 1
             nodohijo.estado[4].append(pos)
+
+            # Si no sigo en la misma fila varía el costo
+            if(self.estado[0][0] != pos[0]):
+                nodohijo.costo += 0.2
+
             #heurística
             nodohijo.heuristica = (abs(pos[0] - nodohijo.estado[2][0]) +
             abs(pos[1] - nodohijo.estado[2][1]))
+            #Para el A*
+            nodohijo.costo_acumulado = self.costo_acumulado + nodohijo.costo
+            nodohijo.costo_estrella = nodohijo.costo_acumulado + \
+            nodohijo.heuristica
         return nodohijo
 
     def expandir(self):
@@ -258,4 +306,16 @@ class BusquedaBFI(Busqueda):
             self.abiertos = nodos + self.abiertos
             #Ordeno todos los abiertos por heuristica
             self.abiertos.sort(key=lambda x: x.heuristica)
+            self.nodosgen += len(nodos)
+
+
+# A *
+class BusquedaAStar(Busqueda):
+
+    def insertar(self, nodos):
+        if (nodos != []):
+            #Los pongo en abiertos (NO IMPORTA DONDE)
+            self.abiertos = nodos + self.abiertos
+            #Ordeno todos los abiertos por heuristica
+            self.abiertos.sort(key=lambda x: x.costo_estrella)
             self.nodosgen += len(nodos)

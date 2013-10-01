@@ -25,7 +25,7 @@ while(opcion!=2):
         if (opcion!=2):
             tamano = input("Ingrese tamano tablero: ")
 
-            if (opcion==1):            
+            if (opcion==1):
                 print("========")
                 print("N-Reinas")
                 print("========")
@@ -76,10 +76,11 @@ while(opcion!=2):
                     busq = camino.BusquedaBestF()
                 elif(opcionbusq==5) and (opcion==0):
                     busq = camino.BusquedaAStar()
-                    
+
                 if opcionbusq in range(0,6) and (opcion==1):
                     busq.buscar(tamano) #Es la busqueda solo para n-reinas
 
-            
-    
-    
+                if opcionbusq in range(0,6) and (opcion==0):
+                    busq.buscar(tamano) #busqueda solo camino
+
+

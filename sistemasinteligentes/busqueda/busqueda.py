@@ -9,6 +9,10 @@ class Nodo(object):
         self.padre = False  # Puntero Identificador del nodo padre
         self.accion = []  # Acción que el padre ejecutó para llegar al nodo
         self.costo = 1
+        self.heuristica = 0
+        # Para la busqueda A*
+        self.costo_acumulado = 1
+        self.costo_estrella = 1
 
     def expandir(self):
         pass
